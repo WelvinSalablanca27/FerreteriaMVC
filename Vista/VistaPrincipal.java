@@ -16,7 +16,7 @@ public class VistaPrincipal extends javax.swing.JFrame {
     public VistaPrincipal() {
         initComponents();
         Opciones.addTab("Categorias", new VistaCategorias());
-        Opciones.addTab("Clientes", new VistaClientes());
+        Opciones.addTab("Cliente", new VistaClientes());
         Opciones.addTab("Compra", new VistaCompra());
         Opciones.addTab("Empleados", new VistaEmpleados());
         Opciones.addTab("Ventas", new VistaVentas());
@@ -37,6 +37,7 @@ public class VistaPrincipal extends javax.swing.JFrame {
         Opciones = new javax.swing.JTabbedPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
