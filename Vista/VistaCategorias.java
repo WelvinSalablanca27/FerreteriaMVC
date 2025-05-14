@@ -143,6 +143,11 @@ public class VistaCategorias extends javax.swing.JPanel {
             }
         });
         jScrollPane1.setViewportView(tablaCategorias);
+        if (tablaCategorias.getColumnModel().getColumnCount() > 0) {
+            tablaCategorias.getColumnModel().getColumn(0).setHeaderValue("ID Categoria");
+            tablaCategorias.getColumnModel().getColumn(1).setHeaderValue("Nombre ");
+            tablaCategorias.getColumnModel().getColumn(2).setHeaderValue("Descripcion");
+        }
 
         btnLimpiar.setText("Limpiar");
 
