@@ -92,7 +92,6 @@ public class VistaEmpleados extends javax.swing.JPanel {
         jLabel7 = new javax.swing.JLabel();
         selectorfechaContratacion = new com.toedter.calendar.JDateChooser();
         textBuscar = new javax.swing.JTextField();
-        btnBuscar = new javax.swing.JButton();
         btnGuardar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
         btnActualizar = new javax.swing.JButton();
@@ -185,6 +184,11 @@ public class VistaEmpleados extends javax.swing.JPanel {
 
         Combocargo.setEditable(true);
         Combocargo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Supervisor", "Cajero", "Gerente" }));
+        Combocargo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CombocargoActionPerformed(evt);
+            }
+        });
         comboCargo.add(Combocargo, new org.netbeans.lib.awtextra.AbsoluteConstraints(207, 84, 160, -1));
 
         jLabel7.setText("Fecha Contratacion");
@@ -192,14 +196,11 @@ public class VistaEmpleados extends javax.swing.JPanel {
         comboCargo.add(selectorfechaContratacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(385, 84, 161, -1));
 
         textBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                textBuscarKeyPressed(evt);
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                textBuscarKeyTyped(evt);
             }
         });
         comboCargo.add(textBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 120, 338, -1));
-
-        btnBuscar.setText("Buscar");
-        comboCargo.add(btnBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(375, 124, 121, -1));
 
         btnGuardar.setText("Guardar");
         btnGuardar.addActionListener(new java.awt.event.ActionListener() {
@@ -270,7 +271,6 @@ public class VistaEmpleados extends javax.swing.JPanel {
         } else {
             javax.swing.JOptionPane.showMessageDialog(this, "Llene los campos requeridos.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
         }
-
     }//GEN-LAST:event_accionBotonGuardar
 
     private void accionBotonEliminar(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_accionBotonEliminar
@@ -279,9 +279,10 @@ public class VistaEmpleados extends javax.swing.JPanel {
             int idEmpleado = (int) tablaEmpleado.getValueAt(filaSeleccionada, 0);
             empleadoControlador.eliminarEmpleado(idEmpleado);
             cargarDatosTabla();
+
         } else {
-            javax.swing.JOptionPane.showMessageDialog(this, "Selecciona una fila para eliminar.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
-        }// TODO add your handling code here:
+            javax.swing.JOptionPane.showMessageDialog(this, "Selecciona una fila para eliminar. ", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_accionBotonEliminar
 
     private void tablaEmpleadoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaEmpleadoMouseClicked
@@ -336,7 +337,23 @@ public class VistaEmpleados extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_accionBotonActualizar
 
-    private void textBuscarKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textBuscarKeyPressed
+    private void accionBotonLimpiar(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_accionBotonLimpiar
+        textprimerNombre.setText("");
+        textsegundoNombre.setText("");
+        textprimerApellido.setText("");
+        textsegundoApellido.setText("");
+        textcelular.setText("");
+        Combocargo.getSelectedItem();
+        selectorfechaContratacion.getDate();
+        btnEliminar.setEnabled(true);
+        btnGuardar.setEnabled(true);
+    }//GEN-LAST:event_accionBotonLimpiar
+
+    private void CombocargoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CombocargoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_CombocargoActionPerformed
+
+    private void textBuscarKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textBuscarKeyTyped
         String textoBusqueda = textBuscar.getText().trim().toLowerCase();
         List<Empleado> empleados = empleadoControlador.obtenerTodosEmpleados();
 
@@ -352,10 +369,7 @@ public class VistaEmpleados extends javax.swing.JPanel {
                         || (emp.getSegundoApellido() != null && emp.getSegundoApellido().toLowerCase().contains(textoBusqueda))
                         || emp.getCelular().toLowerCase().contains(textoBusqueda)
                         || emp.getCargo().toLowerCase().contains(textoBusqueda)) {
-
-                }
-
-                Object[] fila = {
+                    Object[] fila = {
                     emp.getIdEmpleado(),
                     emp.getPrimerNombre(),
                     emp.getSegundoNombre(),
@@ -369,26 +383,13 @@ public class VistaEmpleados extends javax.swing.JPanel {
 
             }
         }
-
-    }//GEN-LAST:event_textBuscarKeyPressed
-
-    private void accionBotonLimpiar(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_accionBotonLimpiar
-         textprimerNombre.setText("");
-        textsegundoNombre.setText("");
-        textprimerApellido.setText("");
-        textsegundoApellido.setText("");
-        textcelular.setText("");
-        Combocargo.getSelectedItem();
-        selectorfechaContratacion.getDate();
-        btnEliminar.setEnabled(true);
-        btnGuardar.setEnabled(true);
-    }//GEN-LAST:event_accionBotonLimpiar
+        }
+    }//GEN-LAST:event_textBuscarKeyTyped
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> Combocargo;
     private javax.swing.JButton btnActualizar;
-    private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnLimpiar;

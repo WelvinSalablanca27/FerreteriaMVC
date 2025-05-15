@@ -60,9 +60,9 @@ public class CompraDAO {
         }
         return compras;
     }
-
-    
-    public void actualizarCompra(Compra compra) throws SQLException {
+// Métodos para Actualizar y Eliminar
+// Método para actualizar una compra
+public void actualizarCompra(Compra compra) throws SQLException {
     String sql = "UPDATE Compras SET id_empleado = ?, fecha_compra = ?, total_compra = ? WHERE id_compra = ?";
     
     try (Connection c = ConexionDB.getConnection();
@@ -77,7 +77,7 @@ public class CompraDAO {
 
 // Método para eliminar una compra
 public void eliminarCompra(int idCompra) throws SQLException {
-    String sql = "DELETE FROM Compra WHERE id_compra = ?";
+    String sql = "DELETE FROM Compras WHERE id_compra = ?";
     
     try (Connection c = ConexionDB.getConnection();
          PreparedStatement stmt = c.prepareStatement(sql)) {
@@ -87,7 +87,7 @@ public void eliminarCompra(int idCompra) throws SQLException {
 }
 
 // Método Main
-  public static void main(String[] args) {
+public static void main(String[] args) {
     try {
         CompraDAO dao = new CompraDAO();
         
@@ -100,7 +100,9 @@ public void eliminarCompra(int idCompra) throws SQLException {
         dao.actualizarCompra(compra);
         System.out.println("Compra actualizada.");
         
-    
+        // Eliminar una compra
+        dao.eliminarCompra(1); // ID a eliminar
+        System.out.println("Compra eliminada.");
         
         // Leer y mostrar todas las compras para verificar
         List<Compra> compras = dao.leerTodasCompras();
@@ -115,5 +117,4 @@ public void eliminarCompra(int idCompra) throws SQLException {
         System.err.println("Error: " + e.getMessage());
     }
 }
-
 }

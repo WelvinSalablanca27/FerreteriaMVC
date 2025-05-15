@@ -17,15 +17,15 @@ import javax.swing.JOptionPane;
 public class VentaControlador {
 
     private final VentaDAO ventaDAO;
-    private final DetalleVentaDAO detalleVentaDAO;
+    
 
     public VentaControlador() {
         this.ventaDAO = new VentaDAO();
-        this.detalleVentaDAO = new DetalleVentaDAO();
+        
     }
 
  
-    public void crearVenta(int idCliente, int idEmpleado, Date fechaVenta, float totalVenta, List<DetalleVenta> detalles) {
+    public void crearVenta(int idCliente, int idEmpleado, Date fechaVenta, float totalVenta) {
         try {
             Venta venta = new Venta();
             venta.setIdCliente(idCliente);
@@ -38,11 +38,6 @@ public class VentaControlador {
                 throw new SQLException("No se pudo obtener el ID de la venta.");
             }
 
-            // Asignar el id_venta a cada detalle y guardarlos
-            for (DetalleVenta detalle : detalles) {
-                detalle.setIdVenta(idVenta);
-                detalleVentaDAO.crearDetalleVenta(detalle);
-            }
 
             JOptionPane.showMessageDialog(null, "Venta y detalles creados exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
         } catch (SQLException e) {
@@ -99,7 +94,7 @@ public class VentaControlador {
         detalles.add(detalle1);
 
         // Crear una venta con detalles
-        controlador.crearVenta(1, 1, new Date(), 555.44f, detalles);
+        controlador.crearVenta(1, 1, new Date(), 555.44f);
 
         
         // Leer todas las ventas

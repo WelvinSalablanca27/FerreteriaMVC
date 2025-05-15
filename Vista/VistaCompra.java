@@ -4,17 +4,58 @@
  */
 package Vista;
 
+import Controlador.CompraControlador;
+import Modelo.Compra;
+import java.util.Date;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author welvi
  */
+
 public class VistaCompra extends javax.swing.JPanel {
 
+    private final CompraControlador compraControlador;
+    private Integer idCompraSeleccionado = null;
+
     /**
-     * Creates new form VistaCompras
+     * Creates new form VsitaEmpleados
      */
     public VistaCompra() {
         initComponents();
+        this.compraControlador = new CompraControlador();
+        selectorfechaCompra.setDate(new Date());
+        ((JTextField) selectorfechaCompra.getDateEditor().getUiComponent()).setEditable(false);
+        cargarDatosTabla();
+    }
+
+    private void cargarDatosTabla() {
+        List<Compra> compra = compraControlador.obtenerTodasCompras();
+        if (compra != null) {
+            DefaultTableModel model = (DefaultTableModel) tablaCompra.getModel();
+            model.setRowCount(0);
+            for (Compra comp : compra) {
+                Object[] row = {
+                    comp.getIdCompra(),
+                    comp.getIdEmpleado(),
+                    comp.getFechaCompra(),
+                    comp.getTotalCompra()
+                };
+                model.addRow(row);
+            }
+        }
+    }
+
+    private void limpiar() {
+        texttotalcompra.setText("");
+        idCompraSeleccionado = null;
+        selectorfechaCompra.setDate(new Date());
+        btnEliminar.setEnabled(true);
+        btnGuardar.setEnabled(true);
     }
 
     /**
@@ -28,20 +69,19 @@ public class VistaCompra extends javax.swing.JPanel {
 
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        TableCompra = new javax.swing.JTable();
+        tablaCompra = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        ComboIdEmpleado = new javax.swing.JComboBox<>();
         jLabel3 = new javax.swing.JLabel();
         texttotalcompra = new javax.swing.JTextField();
-        jDatefechacompra = new com.toedter.calendar.JDateChooser();
+        selectorfechaCompra = new com.toedter.calendar.JDateChooser();
         textbuscar = new javax.swing.JTextField();
-        btnBuscar = new javax.swing.JButton();
         btnGuardar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
         btnActualizar = new javax.swing.JButton();
 
-        TableCompra.setModel(new javax.swing.table.DefaultTableModel(
+        tablaCompra.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -67,16 +107,36 @@ public class VistaCompra extends javax.swing.JPanel {
                 {null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "ID  Compra", "ID Empleado", "Fecha contratacion", "Total venta"
             }
-        ));
-        jScrollPane1.setViewportView(TableCompra);
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.Integer.class, java.lang.Object.class, java.lang.Float.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tablaCompra.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tablaCompraMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tablaCompra);
 
         jLabel1.setText("ID Empleado");
 
         jLabel2.setText("FechaCompra");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        ComboIdEmpleado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20" }));
 
         jLabel3.setText("TotalCompra");
 
@@ -85,14 +145,32 @@ public class VistaCompra extends javax.swing.JPanel {
                 textbuscarActionPerformed(evt);
             }
         });
-
-        btnBuscar.setText("Buscar");
+        textbuscar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                textbuscarKeyPressed(evt);
+            }
+        });
 
         btnGuardar.setText("Guardar");
+        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                accionBotonGuardar(evt);
+            }
+        });
 
         btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                accionBotonEliminar(evt);
+            }
+        });
 
         btnActualizar.setText("Actualizar");
+        btnActualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                accionBotonActualizar(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -107,7 +185,7 @@ public class VistaCompra extends javax.swing.JPanel {
                                 .addComponent(jLabel1))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(15, 15, 15)
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(ComboIdEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(120, 120, 120)
@@ -116,16 +194,14 @@ public class VistaCompra extends javax.swing.JPanel {
                                 .addComponent(jLabel3))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(75, 75, 75)
-                                .addComponent(jDatefechacompra, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(selectorfechaCompra, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(57, 57, 57)
                                 .addComponent(texttotalcompra, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(12, 12, 12)
-                                .addComponent(textbuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(textbuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(17, 17, 17)
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 460, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -147,12 +223,11 @@ public class VistaCompra extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(texttotalcompra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jDatefechacompra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(ComboIdEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(selectorfechaCompra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(33, 33, 33)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(textbuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnBuscar)
                     .addComponent(btnGuardar))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -188,20 +263,145 @@ public class VistaCompra extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_textbuscarActionPerformed
 
+    private void accionBotonGuardar(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_accionBotonGuardar
+        try {
+            String idEmpleadoStr = (String) ComboIdEmpleado.getSelectedItem();
+            String totalCompraStr = texttotalcompra.getText().trim();
+            Date fechaCompra = selectorfechaCompra.getDate();
+
+            if (idEmpleadoStr == null || totalCompraStr.isEmpty() || fechaCompra == null) {
+                JOptionPane.showMessageDialog(this, "Llene todos los campos requeridos.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            int idEmpleado = Integer.parseInt(idEmpleadoStr);
+            float totalCompra = Float.parseFloat(totalCompraStr);
+            java.sql.Date sqlFecha = new java.sql.Date(fechaCompra.getTime());
+
+            compraControlador.crearCompra(idEmpleado, sqlFecha, totalCompra);
+            limpiar();
+            cargarDatosTabla();
+            JOptionPane.showMessageDialog(this, "Compra guardada exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Formato inválido en los campos numéricos.", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+
+    }//GEN-LAST:event_accionBotonGuardar
+
+    private void accionBotonEliminar(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_accionBotonEliminar
+        int filaSeleccionada = tablaCompra.getSelectedRow();
+        if (filaSeleccionada != -1) {
+            int idCompra = (int) tablaCompra.getValueAt(filaSeleccionada, 0);
+            compraControlador.eliminarCompra(idCompra);
+            cargarDatosTabla(); // corregido
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this, "Selecciona una fila para eliminar. ", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+    
+    }//GEN-LAST:event_accionBotonEliminar
+
+    private void tablaCompraMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaCompraMouseClicked
+        if (evt.getClickCount() == 2) {
+            int filaSeleccionada = tablaCompra.getSelectedRow();
+            if (filaSeleccionada != -1) {
+                idCompraSeleccionado = (Integer) tablaCompra.getValueAt(filaSeleccionada, 0);
+                Integer idEmpleado = (Integer) tablaCompra.getValueAt(filaSeleccionada, 1);
+                Date fecha = (Date) tablaCompra.getValueAt(filaSeleccionada, 2);
+                Float totalCompra = (Float) tablaCompra.getValueAt(filaSeleccionada, 3);
+
+                ComboIdEmpleado.setSelectedItem(idEmpleado.toString());
+                selectorfechaCompra.setDate(fecha);
+                texttotalcompra.setText(totalCompra.toString());
+
+                btnEliminar.setEnabled(false);
+                btnGuardar.setEnabled(false);
+            }
+        }
+
+
+    }//GEN-LAST:event_tablaCompraMouseClicked
+
+    private void textbuscarKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textbuscarKeyPressed
+        String textoBusqueda = textbuscar.getText().trim().toLowerCase();
+        List<Compra> compras = compraControlador.obtenerTodasCompras();
+
+        DefaultTableModel modelo = (DefaultTableModel) tablaCompra.getModel();
+        modelo.setRowCount(0);
+
+        if (compras != null) {
+            for (Compra comp : compras) {
+                String idEmpleadoStr = String.valueOf(comp.getIdEmpleado());
+                String totalCompraStr = String.valueOf(comp.getTotalCompra());
+
+                if (textoBusqueda.isEmpty()
+                        || idEmpleadoStr.contains(textoBusqueda)
+                        || totalCompraStr.contains(textoBusqueda)) {
+
+                    Object[] fila = {
+                        comp.getIdCompra(),
+                        comp.getIdEmpleado(),
+                        comp.getFechaCompra(),
+                        comp.getTotalCompra()
+                    };
+                    modelo.addRow(fila);
+                }
+            }
+        }
+
+
+    }//GEN-LAST:event_textbuscarKeyPressed
+
+    private void accionBotonActualizar(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_accionBotonActualizar
+        if (idCompraSeleccionado == null) {
+            JOptionPane.showMessageDialog(this, "Seleccione una compra para actualizar.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            String idEmpleadoStr = (String) ComboIdEmpleado.getSelectedItem();
+            String totalCompraStr = texttotalcompra.getText().trim();
+            Date fechaCompra = selectorfechaCompra.getDate();
+
+            if (idEmpleadoStr == null || totalCompraStr.isEmpty() || fechaCompra == null) {
+                JOptionPane.showMessageDialog(this, "Llene todos los campos requeridos.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            int idEmpleado = Integer.parseInt(idEmpleadoStr);
+            float totalCompra = Float.parseFloat(totalCompraStr);
+            java.sql.Date sqlFecha = new java.sql.Date(fechaCompra.getTime());
+
+            compraControlador.actualizarCompra(idCompraSeleccionado, idEmpleado, sqlFecha, totalCompra);
+            limpiar();
+            cargarDatosTabla();
+            btnEliminar.setEnabled(true);
+            btnGuardar.setEnabled(true);
+            btnActualizar.setEnabled(false);
+            JOptionPane.showMessageDialog(this, "Compra actualizada exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Formato inválido en los campos numéricos.", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+    }//GEN-LAST:event_accionBotonActualizar
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTable TableCompra;
+    private javax.swing.JComboBox<String> ComboIdEmpleado;
     private javax.swing.JButton btnActualizar;
-    private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnGuardar;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private com.toedter.calendar.JDateChooser jDatefechacompra;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private com.toedter.calendar.JDateChooser selectorfechaCompra;
+    private javax.swing.JTable tablaCompra;
     private javax.swing.JTextField textbuscar;
     private javax.swing.JTextField texttotalcompra;
     // End of variables declaration//GEN-END:variables

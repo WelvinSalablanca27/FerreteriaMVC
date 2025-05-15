@@ -1,11 +1,8 @@
 
 package Modelo;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+
 import java.util.Date;
-import java.util.List;
 /**
  *
  * @author welvi
@@ -15,17 +12,16 @@ public class Compra {
     private int idEmpleado; // Relación con Empleado
     private Date fechaCompra;
     private float totalCompra;
-    private List<DetalleCompra> detalles;
 
     public Compra() {
     }
 
-    public Compra(int idCompra, int idEmpleado, Date fechaCompra, float totalCompra, List<DetalleCompra> detalles) {
+    public Compra(int idCompra, int idEmpleado, Date fechaCompra, float totalCompra) {
         this.idCompra = idCompra;
         this.idEmpleado = idEmpleado;
         this.fechaCompra = fechaCompra;
         this.totalCompra = totalCompra;
-        this.detalles = detalles;
+  
     }
 
     public int getIdCompra() {
@@ -60,14 +56,5 @@ public class Compra {
         this.totalCompra = totalCompra;
     }
 
-    public List<DetalleCompra> getDetalles() {
-        return detalles;
-    }
-
-    public void setDetalles(List<DetalleCompra> detalles) {
-        this.detalles = detalles;
-    }
-
-   
     
  }

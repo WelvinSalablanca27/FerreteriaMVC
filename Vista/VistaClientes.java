@@ -4,18 +4,48 @@
  */
 package Vista;
 
+import Controlador.ClienteControlador;
+import Modelo.Cliente;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
- * @author welvi
+ * @author Edith Cruz
  */
 public class VistaClientes extends javax.swing.JPanel {
 
-    /**
-     * Creates new form VistaClientes
-     */
+    private final ClienteControlador clienteControlador;
+    private Integer id_ClienteSeleccionada = null;
+
     public VistaClientes() {
         initComponents();
-     
+        this.clienteControlador = new ClienteControlador();
+        cargarDatosTabla();
+    }
+
+    public void cargarDatosTabla() {
+
+        List<Cliente> cliente = clienteControlador.obtenerTodosClientes();
+
+        if (cliente != null) {
+            DefaultTableModel model = (DefaultTableModel) tablaCliente.getModel();
+            model.setRowCount(0);
+
+            for (Cliente cli : cliente) {
+                Object[] row = {
+                    cli.getIdCliente(),
+                    cli.getPrimerNombre(),
+                    cli.getSegundoNombre(),
+                    cli.getPrimerApellido(),
+                    cli.getSegundoApellido(),
+                    cli.getCelular(),
+                    cli.getDireccion(),
+                    cli.getCedula()
+                };
+                model.addRow(row);
+            }
+        }
     }
 
     /**
@@ -37,17 +67,17 @@ public class VistaClientes extends javax.swing.JPanel {
         textcedula = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         btnGuardar = new javax.swing.JButton();
-        btnBuscar = new javax.swing.JButton();
         textBuscar = new javax.swing.JTextField();
         btnEliminar = new javax.swing.JButton();
         btnActualizar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        TableClientes = new javax.swing.JTable();
+        tablaCliente = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
+        btnLimpiar = new javax.swing.JButton();
 
         jlable.setText("Primer Apellido");
 
@@ -72,42 +102,87 @@ public class VistaClientes extends javax.swing.JPanel {
         jLabel2.setText("Cedula");
 
         btnGuardar.setText("Guardar");
+        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                accionBotonGuardar(evt);
+            }
+        });
 
-        btnBuscar.setText("Buscar");
+        textBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                textBuscarKeyTyped(evt);
+            }
+        });
 
         btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                accionBotonEliminar(evt);
+            }
+        });
 
         btnActualizar.setText("Actualizar");
+        btnActualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                accionBotonActualizar(evt);
+            }
+        });
 
-        TableClientes.setModel(new javax.swing.table.DefaultTableModel(
+        tablaCliente.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "ID Cliente", "Nombre1", "Nombre2", "Apellido1", "Apellido2", "Celular", "Direccion", "Celula"
             }
-        ));
-        jScrollPane1.setViewportView(TableClientes);
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tablaCliente.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tablaClienteMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tablaCliente);
 
         jLabel3.setText("PrimerNombre");
 
@@ -119,61 +194,73 @@ public class VistaClientes extends javax.swing.JPanel {
 
         jLabel7.setText("Direccion");
 
+        btnLimpiar.setText("Limpiar");
+        btnLimpiar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                accionBotonbtnLimpiar(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(62, 62, 62)
-                        .addComponent(jLabel6)
-                        .addGap(151, 151, 151)
-                        .addComponent(jLabel7)
-                        .addGap(134, 134, 134)
-                        .addComponent(jLabel2))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(35, 35, 35)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addContainerGap()
+                            .addComponent(textprimerNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18)
+                            .addComponent(textsegundoNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(11, 11, 11)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(textprimerApellido, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(49, 49, 49)
+                                    .addComponent(textsegundoApellido, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                    .addComponent(jlable)
+                                    .addGap(110, 110, 110)
+                                    .addComponent(jLabel5)
+                                    .addGap(39, 39, 39))))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(btnEliminar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnActualizar, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 539, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(34, 34, 34)
-                        .addComponent(jLabel3)
-                        .addGap(92, 92, 92)
-                        .addComponent(jLabel4))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(textprimerNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(textsegundoNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(11, 11, 11)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(textprimerApellido, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(49, 49, 49)
-                                .addComponent(textsegundoApellido, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(62, 62, 62)
+                                .addComponent(jLabel6)
+                                .addGap(151, 151, 151)
+                                .addComponent(jLabel7)
+                                .addGap(134, 134, 134)
+                                .addComponent(jLabel2))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jlable)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel5)
-                                .addGap(39, 39, 39))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(textBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 335, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(textcelular, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(34, 34, 34)
-                                .addComponent(textdireccion, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(textcedula, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(jLabel3)
+                                .addGap(92, 92, 92)
+                                .addComponent(jLabel4))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(15, 15, 15)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(textcelular, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(34, 34, 34)
+                                        .addComponent(textdireccion, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(textcedula, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(6, 6, 6)
+                                        .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(8, 8, 8)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 545, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(25, 25, 25)
+                        .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(46, 46, 46)
+                        .addComponent(textBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 335, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -205,20 +292,21 @@ public class VistaClientes extends javax.swing.JPanel {
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(textdireccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(textcedula, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(27, 27, 27)
-                .addComponent(textBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(45, 45, 45)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(12, 12, 12)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(btnEliminar, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+                    .addComponent(textBuscar, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnGuardar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnGuardar)
-                        .addGap(31, 31, 31)
-                        .addComponent(btnBuscar)
-                        .addGap(28, 28, 28)
-                        .addComponent(btnEliminar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGap(32, 32, 32)
-                        .addComponent(btnActualizar))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(29, 29, 29)
+                        .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(46, Short.MAX_VALUE))
         );
 
         getAccessibleContext().setAccessibleName("");
@@ -237,13 +325,162 @@ public class VistaClientes extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_textprimerApellidoActionPerformed
 
+    private void accionBotonGuardar(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_accionBotonGuardar
+        String primerNombre = textprimerNombre.getText();
+        String segundoNombre = textsegundoNombre.getText();
+        String primerApellido = textprimerApellido.getText();
+        String segundoApellido = textsegundoApellido.getText();
+        String Celular = textcelular.getText();
+        String Direccion = textdireccion.getText();
+        String Cedula = textcedula.getText();
+
+        if (!primerNombre.isEmpty() && !segundoNombre.isEmpty() && !primerApellido.isEmpty() && !segundoApellido.isEmpty() && !Celular.isEmpty()
+                && !Direccion.isEmpty() && !Cedula.isEmpty()) {
+            clienteControlador.crearCliente(primerNombre, segundoNombre, primerApellido, segundoApellido, Celular, Direccion, Cedula);
+            cargarDatosTabla();
+
+            textprimerNombre.setText("");
+            textsegundoNombre.setText("");
+            textprimerApellido.setText("");
+            textsegundoApellido.setText("");
+            textcelular.setText("");
+            textdireccion.setText("");
+            textcedula.setText("");
+
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this, "Por favor, llene los campos.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_accionBotonGuardar
+
+    private void accionBotonEliminar(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_accionBotonEliminar
+        int filaSeleccionada = tablaCliente.getSelectedRow();
+        if (filaSeleccionada != -1) {
+            int id_Cliente = (int) tablaCliente.getValueAt(filaSeleccionada, 0);
+            clienteControlador.eliminarCliente(id_Cliente);
+            cargarDatosTabla();
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this, "Selecciona una fila para eliminar.", "error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_accionBotonEliminar
+
+    private void accionBotonActualizar(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_accionBotonActualizar
+        String primerNombre = textprimerNombre.getText();
+        String segundoNombre = textsegundoNombre.getText();
+        String primerApellido = textprimerApellido.getText();
+        String segundoApellido = textsegundoApellido.getText();
+        String Celular = textcelular.getText();
+        String Direccion = textdireccion.getText();
+        String Cedula = textcedula.getText();
+
+        if (!primerNombre.isEmpty() && !segundoNombre.isEmpty() && !primerApellido.isEmpty() && !segundoApellido.isEmpty() && !Celular.isEmpty()
+                && !Direccion.isEmpty() && !Cedula.isEmpty()) {
+            clienteControlador.crearCliente(primerNombre, segundoNombre, primerApellido, segundoApellido, Celular, Direccion, Cedula);
+            cargarDatosTabla();
+
+            textprimerNombre.setText(primerNombre);
+            textsegundoNombre.setText(segundoNombre);
+            textprimerApellido.setText(primerApellido);
+            textsegundoApellido.setText(segundoApellido);
+            textcelular.setText(Celular);
+            textdireccion.setText(Direccion);
+            textcedula.setText(Cedula);
+            id_ClienteSeleccionada = null;
+
+            btnEliminar.setEnabled(true);
+            btnGuardar.setEnabled(true);
+
+        } else {
+
+            javax.swing.JOptionPane.showMessageDialog(this, "Por favor, llene los campos.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+
+        }
+    }//GEN-LAST:event_accionBotonActualizar
+
+    private void accionBotonbtnLimpiar(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_accionBotonbtnLimpiar
+        textprimerNombre.setText("");
+        textsegundoNombre.setText("");
+        textprimerApellido.setText("");
+        textsegundoApellido.setText("");
+        textcelular.setText("");
+        textdireccion.setText("");
+        textcedula.setText("");
+        btnEliminar.setEnabled(true);
+        btnGuardar.setEnabled(true);
+        cargarDatosTabla(); // Reload
+    }//GEN-LAST:event_accionBotonbtnLimpiar
+
+    private void textBuscarKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textBuscarKeyTyped
+        String textoBusqueda = textBuscar.getText().trim().toLowerCase();
+        List<Cliente> cliente = clienteControlador.obtenerTodosClientes();
+
+        DefaultTableModel modelo = (DefaultTableModel) tablaCliente.getModel();
+        modelo.setRowCount(0);
+
+        if (cliente != null) {
+            for (Cliente cli : cliente) {
+                if (textoBusqueda.isEmpty()
+                        || cli.getPrimerNombre().toLowerCase().contains(textoBusqueda)
+                        || cli.getSegundoNombre().toLowerCase().contains(textoBusqueda)
+                        || cli.getPrimerApellido().toLowerCase().contains(textoBusqueda)
+                        || cli.getSegundoApellido().toLowerCase().contains(textoBusqueda)
+                        || cli.getCelular().toLowerCase().contains(textoBusqueda)
+                        || cli.getDireccion().toLowerCase().contains(textoBusqueda)
+                        || cli.getCedula().toLowerCase().contains(textoBusqueda)) {
+
+                    Object[] fila = {
+                        cli.getIdCliente(),
+                        cli.getPrimerNombre(),
+                        cli.getSegundoNombre(),
+                        cli.getPrimerApellido(),
+                        cli.getSegundoApellido(),
+                        cli.getCelular(),
+                        cli.getDireccion(),
+                        cli.getCedula()
+                    };
+                    modelo.addRow(fila);
+                }
+            }
+        }
+    }//GEN-LAST:event_textBuscarKeyTyped
+
+    private void tablaClienteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaClienteMouseClicked
+        if (evt.getClickCount() == 2) {
+
+            int filaSeleccionada = tablaCliente.getSelectedRow();
+
+            if (filaSeleccionada != -1) {
+
+                id_ClienteSeleccionada = (int) tablaCliente.getValueAt(filaSeleccionada, 0);
+                String primerNombre = (String) tablaCliente.getValueAt(filaSeleccionada, 1);
+                String segundoNombre = (String) tablaCliente.getValueAt(filaSeleccionada, 2);
+                String primerApellido = (String) tablaCliente.getValueAt(filaSeleccionada, 3);
+                String segundoApellido = (String) tablaCliente.getValueAt(filaSeleccionada, 4);
+                String Celular = (String) tablaCliente.getValueAt(filaSeleccionada, 5);
+                String Direccion = (String) tablaCliente.getValueAt(filaSeleccionada, 6);
+                String Cedula = (String) tablaCliente.getValueAt(filaSeleccionada, 7);
+                
+                textprimerNombre.setText(primerNombre);
+                textsegundoNombre.setText(segundoNombre);
+                textprimerApellido.setText(primerApellido);
+                textsegundoApellido.setText(segundoApellido);
+                textcelular.setText(Celular);
+                textdireccion.setText(Direccion);
+                textcedula.setText(Cedula);
+
+                btnEliminar.setEnabled(false);
+                btnGuardar.setEnabled(false);
+
+            }
+        }
+
+    }//GEN-LAST:event_tablaClienteMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTable TableClientes;
     private javax.swing.JButton btnActualizar;
-    private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnGuardar;
+    private javax.swing.JButton btnLimpiar;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -252,6 +489,7 @@ public class VistaClientes extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel jlable;
+    private javax.swing.JTable tablaCliente;
     private javax.swing.JTextField textBuscar;
     private javax.swing.JTextField textcedula;
     private javax.swing.JTextField textcelular;

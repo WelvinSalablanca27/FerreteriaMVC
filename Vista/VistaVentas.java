@@ -4,17 +4,62 @@
  */
 package Vista;
 
+import Controlador.VentaControlador;
+import Modelo.Venta;
+import java.util.Date;
+import java.util.List;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author welvi
  */
 public class VistaVentas extends javax.swing.JPanel {
 
+    private final VentaControlador ventaControlador;
+    private Integer idVentaeleccionado = null;
+
     /**
-     * Creates new form VistaVentas
+     * Creates new form VsitaEmpleados
      */
     public VistaVentas() {
         initComponents();
+        this.ventaControlador = new VentaControlador();
+        selectorfechaVenta.setDate(new Date());
+        ((JTextField) selectorfechaVenta.getDateEditor().getUiComponent()).setEditable(false);
+        cargarDatosTabla();
+    }
+
+    private void cargarDatosTabla() {
+        List<Venta> venta = ventaControlador.obtenerTodasVentas();
+        if (venta != null) {
+            DefaultTableModel model = (DefaultTableModel) tablaVentas.getModel();
+            model.setRowCount(0);
+            for (Venta ven : venta) {
+                Object[] row = {
+                    ven.getIdVenta(),
+                    ven.getIdCliente(),
+                    ven.getIdEmpleado(),
+                    ven.getIdProducto(),
+                    ven.getFechaVenta(),
+                    ven.getTotalVenta()
+                };
+                model.addRow(row);
+            }
+        }
+    }
+
+    private void limpiar() {
+        textidCliente.setText("");
+        textidEmpleado.setText("");
+        textidproducto.setText("");
+        selectorfechaVenta.setDate(new Date());
+        textTotalventas.setText("");
+        textBuscar.setText("");
+        idVentaeleccionado = null;
+        btnEliminar.setEnabled(true);
+        btnGuardar.setEnabled(true);
     }
 
     /**
@@ -34,15 +79,15 @@ public class VistaVentas extends javax.swing.JPanel {
         textidCliente = new javax.swing.JTextField();
         textidEmpleado = new javax.swing.JTextField();
         textidproducto = new javax.swing.JTextField();
-        textidFechaventas = new javax.swing.JTextField();
         textTotalventas = new javax.swing.JTextField();
         textBuscar = new javax.swing.JTextField();
         btnGuardar = new javax.swing.JButton();
-        btnBuscar = new javax.swing.JButton();
+        btnLimpiar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
         btnActualizar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        TableVentas = new javax.swing.JTable();
+        tablaVentas = new javax.swing.JTable();
+        selectorfechaVenta = new com.toedter.calendar.JDateChooser();
 
         jLabel1.setText("ID Clientes");
 
@@ -73,14 +118,24 @@ public class VistaVentas extends javax.swing.JPanel {
         });
 
         btnGuardar.setText("Guardar");
+        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                accionBotonGuardar(evt);
+            }
+        });
 
-        btnBuscar.setText("Buscar");
+        btnLimpiar.setText("Limpiar");
+        btnLimpiar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                accionBotonLimpiar(evt);
+            }
+        });
 
         btnEliminar.setText("Eliminar");
 
         btnActualizar.setText("Actualizar");
 
-        TableVentas.setModel(new javax.swing.table.DefaultTableModel(
+        tablaVentas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -110,7 +165,7 @@ public class VistaVentas extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(TableVentas);
+        jScrollPane1.setViewportView(tablaVentas);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -119,14 +174,11 @@ public class VistaVentas extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(17, 17, 17)
-                                .addComponent(textidFechaventas, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(textidCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(18, 18, 18)
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(textidCliente, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
+                            .addComponent(selectorfechaVenta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(29, 29, 29)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(textidEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -158,7 +210,7 @@ public class VistaVentas extends javax.swing.JPanel {
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                 .addContainerGap(85, Short.MAX_VALUE))
@@ -183,16 +235,17 @@ public class VistaVentas extends javax.swing.JPanel {
                     .addComponent(jLabel4)
                     .addComponent(jLabel5))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(textidFechaventas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(textTotalventas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(textBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(textTotalventas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(textBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(selectorfechaVenta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(47, 47, 47)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnGuardar)
                         .addGap(20, 20, 20)
-                        .addComponent(btnBuscar)
+                        .addComponent(btnLimpiar)
                         .addGap(30, 30, 30)
                         .addComponent(btnEliminar)
                         .addGap(26, 26, 26)
@@ -214,24 +267,50 @@ public class VistaVentas extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_textTotalventasActionPerformed
 
+    private void accionBotonLimpiar(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_accionBotonLimpiar
+        // TODO add your handling code here:
+    }//GEN-LAST:event_accionBotonLimpiar
+
+    private void accionBotonGuardar(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_accionBotonGuardar
+        String IdCliente = textidCliente.getText();
+        String IdEmpleado = textidEmpleado.getText();
+        String IdProducto = textidproducto.getText();
+        Date fecha = this.selectorfechaVenta.getDate();
+        java.sql.Date selectorfechaVenta = new java.sql.Date(fecha.getTime());
+        String TotalVentas = textTotalventas.getText();
+
+
+        if (!IdCliente.isEmpty() && !IdEmpleado.isEmpty() && !IdProducto.isEmpty() && !TotalVentas.isEmpty()) {
+            try {
+             ventaControlador.crearVenta(0, 0, selectorfechaVenta, 0);
+                limpiar();
+                cargarDatosTabla();
+            } catch (Exception e) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this, "Llene los campos requeridos.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_accionBotonGuardar
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTable TableVentas;
     private javax.swing.JButton btnActualizar;
-    private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnGuardar;
+    private javax.swing.JButton btnLimpiar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
+    private com.toedter.calendar.JDateChooser selectorfechaVenta;
+    private javax.swing.JTable tablaVentas;
     private javax.swing.JTextField textBuscar;
     private javax.swing.JTextField textTotalventas;
     private javax.swing.JTextField textidCliente;
     private javax.swing.JTextField textidEmpleado;
-    private javax.swing.JTextField textidFechaventas;
     private javax.swing.JTextField textidproducto;
     // End of variables declaration//GEN-END:variables
 }

@@ -18,15 +18,14 @@ import javax.swing.JOptionPane;
 public class CompraControlador {
     
     private final CompraDAO compraDAO;
-    private final DetalleCompraDAO detalleCompraDAO;
 
     public CompraControlador() {
         this.compraDAO = new CompraDAO();
-        this.detalleCompraDAO = new DetalleCompraDAO();
+   
     }
 
     // Método para crear una nueva compra con sus detalles
-    public void crearCompra(int idEmpleado, Date fechaCompra, float totalCompra, List<DetalleCompra> detalles) {
+    public void crearCompra(int idEmpleado, Date fechaCompra, float totalCompra) {
         try {
             Compra compra = new Compra();
             compra.setIdEmpleado(idEmpleado);
@@ -37,13 +36,6 @@ public class CompraControlador {
             if (idCompra == -1) {
                 throw new SQLException("No se pudo obtener el ID de la compra.");
             }
-
-            // Asignar el id_compra a cada detalle y guardarlos
-            for (DetalleCompra detalle : detalles) {
-                detalle.setIdCompra(idCompra);
-                detalleCompraDAO.crearDetalleCompra(detalle);
-            }
-
             JOptionPane.showMessageDialog(null, "Compra y detalles creados exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error al crear la compra: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -98,7 +90,7 @@ public class CompraControlador {
         detalles.add(detalle1);
 
         // Crear una compra con detalles
-        controlador.crearCompra(1, new Date(), 150.50f, detalles);
+        controlador.crearCompra(0,  new Date(), 0);
 
         // Leer todas las compras
         List<Compra> compras = controlador.obtenerTodasCompras();

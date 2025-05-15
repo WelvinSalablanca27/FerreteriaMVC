@@ -14,19 +14,18 @@ private int idEmpleado; // Relación con Empleado
 private int idProducto;
 private Date fechaVenta;
 private float totalVenta;
-private List<DetalleVenta> detalles; // Relación con DetalleVenta
+ // Relación con DetalleVenta
 
     public Venta() {
     }
 
-    public Venta(int idVenta, int idCliente, int idEmpleado, int idProducto, Date fechaVenta, float totalVenta, List<DetalleVenta> detalles) {
+    public Venta(int idVenta, int idCliente, int idEmpleado, int idProducto, Date fechaVenta, float totalVenta) {
         this.idVenta = idVenta;
         this.idCliente = idCliente;
         this.idEmpleado = idEmpleado;
         this.idProducto = idProducto;
         this.fechaVenta = fechaVenta;
         this.totalVenta = totalVenta;
-        this.detalles = detalles;
     }
 
     public int getIdVenta() {
@@ -77,13 +76,5 @@ private List<DetalleVenta> detalles; // Relación con DetalleVenta
         this.totalVenta = totalVenta;
     }
 
-    public List<DetalleVenta> getDetalles() {
-        return detalles;
-    }
 
-    public void setDetalles(List<DetalleVenta> detalles) {
-        this.detalles = detalles;
-    }
-
-    
 }
